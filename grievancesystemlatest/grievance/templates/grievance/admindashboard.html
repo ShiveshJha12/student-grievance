@@ -1,0 +1,222 @@
+{% extends 'grievance/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% include 'grievance/adminsidebar.html' %}
+      <style>
+        table {
+  font-family: 'Times New Roman', 'Times', serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+letter-spacing: 0.5px    
+}
+
+tr:nth-child(even) {
+  background-color: lightgray;
+  color: black;
+}
+tr:nth-child(odd) {
+  background-color: white;
+  color: black;
+}
+
+      </style>
+
+
+ <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+     
+google.charts.load("current", {packages:['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+    function drawChart() {
+      var data = google.visualization.arrayToDataTable([
+        ["Months", "No. of Complains", { role: "style" } ],
+        ["January", {{months.01}}, "#b87333"],
+        ["February", {{months.02}}, "silver"],
+        ["March", {{months.03}}, "gold"],
+        ["April", {{months.04}}, "color: #e5e4e2"],
+        ["May", {{months.05}}, "color: green"],
+        ["June", {{months.06}}, "color: orange"],
+          ["July", {{months.07}}, "color: black"],
+          ["August", {{months.08}}, "color: black"],
+          ["September", {{months.09}}, "color: black"],
+          ["October", {{months.10}}, "color: black"],
+          ["November", {{months.11}}, "color: black"],
+          ["December", {{months.12}}, "color: black"]
+      ]);
+
+      var view = new google.visualization.DataView(data);
+      view.setColumns([0, 1,
+                       { calc: "stringify",
+                         sourceColumn: 1,
+                         type: "string",
+                         role: "annotation" },
+                       2]);
+
+      var options = {
+        title: 'No. of Complains in every month',
+        width: 1400,
+        height: 420,
+        bar: {groupWidth: "70%"},
+        legend: { position: "none" },
+      };
+      var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values"));
+      chart.draw(view, options);
+        
+        
+        
+        
+        google.charts.load("current", {packages:["corechart"]});
+      google.charts.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Department', 'Number of Complains'],
+          ['Management', {{management}}],
+          ['Security', {{security}}],
+          ['Library', {{library}}],
+          ['Faculty', {{faculty}}],
+          ['Canteen', {{canteen}}]
+        ]);
+
+        var options = {
+          title: 'Department wise Complains',
+          is3D: true,
+        };
+          
+          
+        var data2 = google.visualization.arrayToDataTable([
+          ['Branch', 'Number of Complains'],
+          ['Computer', {{computer}}],
+          ['EXTC', {{extc}}],
+          ['ELEX',{{elex}}],
+          ['Chemical',{{chemical}}],
+          ['IT', {{it}}],
+          ['Production', {{production}}],
+          ['Bio Med', {{biomed}}]
+        ]);
+
+        var options2 = {
+          title: 'Branch wise Complains',
+          is3D: true,
+        };  
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart1_3d'));
+        chart.draw(data, options);
+          
+          
+        var chart2 = new google.visualization.PieChart(document.getElementById('piechart2_3d'));
+        chart2.draw(data2, options2);  
+      }
+        
+        
+  }
+  </script>
+      <!-- Page content -->
+
+      <div class="content">
+    <h3 class="button1" style="padding: 15px;padding-left: 7pxpx;border-left: 5px solid black;background-color: rgb(241, 41, 41);color: white;margin-bottom: 30px;font-family: 'Times New Roman', 'Times', serif; letter-spacing: 1px">&#9679; Dashboard</h3>
+        {% if messages %}
+    {% for x in messages %}
+            <div class="alert alert-custom  fade in alert-dismissable show" style="margin-top:18px;font-size: 20px; letter-spacing: 0.5px">
+             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true" style="font-size:20px">×</span>
+              </button><center>{{x}}</center>
+            </div>
+     {% endfor %}
+     {% endif %}
+             
+          
+          
+         
+          <div id="columnchart_values" style="width: 900px; height: 100px;"></div><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+          
+          <div class='row'>
+              <div class='col-md-5 col-md-offset-1'  id="piechart1_3d" style="width: 600px; height: 500px;"></div><div class='col-md-5 col-md-offset-1' id="piechart2_3d" style="width: 600px; height: 500px;"></div>
+          </div>
+          
+          
+     <div class="container " style="padding-top: 20px;">
+      <h3 class="" style="border-left: 4px solid lightgray;font-family: 'Times New Roman', Times, serif;text-align: ;padding-left: 15px;font-weight: bold;margin-bottom: 30px;">UNADRESSED COMPLAINS :</h3>
+      <table class="button1">
+      <tr style="color: white;background-color: rgb(241, 41, 41);">
+        <th style="padding: 10px;font-size: 20px;">Complain title</th>
+        <th style="padding: 10px;font-size: 20px;">From</th>
+        <th style="padding: 10px;font-size: 20px;">Posted On</th>
+        <th style="padding: 10px;font-size: 20px;">View details</th>
+        <th style="padding: 20px;font-size: 20px;">Status</th>
+        
+      </tr>
+          {% if vcomplains %}
+      {% for v in vcomplains %}
+      <tr>
+        <td><p style="font-size: 15px;font-weight: bold;">{{v.complain_heading}}</p></td>
+        <td><p style="font-size: 15px;">{{v.sender.branch}} Department, {{v.sender.college}}</p></td>
+        <td><p style="font-size: 15px;">{{v.date_posted|date:"M d, Y"}}</p></td>
+        <td><a href="/adminComplainView/{{v.id}}/">View</a></td>
+        <td><p style="font-size: 15px;font-weight: bold;">{{v.status}}</p></td>
+      </tr>
+      {% endfor %}
+    {% else %}
+                  <tr >
+                      <td colspan="5"><center><p class='text-muted'>No Complains to display</p></center></td>
+                  </tr>
+            {% endif %}      
+      
+    </table>
+  </div>
+  
+  
+  <div class="container " style="padding-top: 20px;">
+      
+      
+           
+      
+      
+      
+    <h3 class="" style="border-left: 5px solid lightgray;font-family: 'Times New Roman', Times, serif;margin-top: 70px;padding-left: 15px;font-weight: bold;margin-bottom: 30px;">ADDRESSED COMPLAINS:</h2>
+    <table class="button1">
+    <tr style="color: white;background-color: rgb(241, 41, 41);">
+      <th style="padding: 10px;font-size: 20px;">Complain title</th>
+      <th style="padding: 10px;font-size: 20px;">From</th>
+      <th style="padding: 10px;font-size: 20px;">Posted On</th>
+      <th style="padding: 10px;font-size: 20px;">View details</th>
+      <th style="padding: 20px;font-size: 20px;">Status</th>
+      
+    </tr>
+        {% if rcomplains or scomplains %}
+    {% for r in rcomplains %}
+    <tr>
+      <td><p style="font-size: 15px;font-weight: bold;">{{r.complain_heading}}</p></td>
+      <td><p style="font-size: 15px;">{{r.sender.branch}} Department, {{r.sender.college}}</p></td>
+      <td><p style="font-size: 15px;">{{r.date_posted|date:"M d, Y"}}</p></td>
+      <td><a href="/adminComplainView/{{r.id}}/">View</a></td>
+      <td><p style="font-size: 15px;font-weight: bold;">{{r.status}}</p></td>
+    </tr>
+    {% endfor %}
+        
+    {% for s in scomplains %}
+    <tr>
+      <td><p style="font-size: 15px;font-weight: bold;">{{s.complain_heading}}</p></td>
+      <td><p style="font-size: 15px;">{{s.sender.branch}} Department, {{s.sender.college}}</p></td>
+      <td><p style="font-size: 15px;">{{s.date_posted|date:"M d, Y"}}</p></td>
+      <td><a href="/adminComplainView/{{s.id}}/">View</a></td>
+      <td><p style="font-size: 15px;font-weight: bold;">{{s.status}}</p></td>
+    </tr>
+    {% endfor %}
+        {% else %}
+                  <tr >
+                      <td colspan="5"><center><p class='text-muted'>No Complains to display</p></center></td>
+                  </tr>
+            {% endif %}
+    
+  </table>
+</div>
+
+      </div>
+{% endblock %}
