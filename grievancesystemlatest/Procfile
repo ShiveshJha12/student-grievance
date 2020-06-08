@@ -1,1 +1,1 @@
-web: gunicorn grievance.wsgi
+web: gunicorn grievancesystem.wsgi
